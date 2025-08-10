@@ -4,4 +4,4 @@ const config = useRuntimeConfig();
 const supabaseUrl = config.SUPABASE_URL;
 const supabaseKey = config.SUPABASE_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabaseClient = createClient(supabaseUrl, supabaseKey);

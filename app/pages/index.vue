@@ -1,54 +1,76 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
-    <div v-if="hydrated" class="max-w-xl mx-auto text-center space-y-4">
-      <h1 class="text-2xl font-bold">AI Meta Description & SEO Tool</h1>
-      <p class="text-gray-600 dark:text-gray-400">Generate SEO metadata in seconds using AI</p>
+  <section id="home" class="bg-linear-to-br from-primary/20 to-secondary/10">
+    <div v-if="hydrated" class="relative h-screen flex items-center justify-center overflow-hidden">
+      <div class="background-box"></div>
+      <div class="background-box"></div>
+      <div class="background-box"></div>
+      <div class="background-box"></div>
+      <div class="background-box"></div>
 
-      <div class="flex items-center justify-center gap-4">
-        <USelect v-model="language" :items="languageOptions" placeholder="Select Language" class="w-full" />
-        <USelect v-model="model" :items="modelOptions" placeholder="Select Model" class="w-full" />
-      </div>
+      <div class="box relative">
+        <div class="square animate-move" style="--i: 0"></div>
+        <div class="square animate-move" style="--i: 1"></div>
+        <div class="square animate-move" style="--i: 2"></div>
+        <div class="square animate-move" style="--i: 3"></div>
+        <div class="square animate-move" style="--i: 4"></div>
+        <div
+          class="max-w-xl mx-auto min-h-[calc(100vh-12rem)] text-center space-y-4 bg-white/10 p-12 rounded-xl shadow-lg">
+          <h1 class="text-2xl font-bold">AI Meta Description & SEO Tool</h1>
+          <p class="text-gray-600 dark:text-gray-400">Generate SEO metadata in seconds using AI</p>
 
-      <UTextarea
-        v-model="input"
-        placeholder="Enter your blog title or content snippet"
-        autoresize
-        :rows="3"
-        class="w-full" />
+          <div class="flex items-center justify-center gap-4">
+            <USelect v-model="language" :items="languageOptions" placeholder="Select Language" class="w-full" />
+            <USelect v-model="model" :items="modelOptions" placeholder="Select Model" class="w-full" />
+          </div>
 
-      <div class="text-sm text-gray-500 dark:text-gray-400">Uses today: {{ usageCount }} / 3</div>
+          <UTextarea
+            v-model="input"
+            placeholder="Enter your blog title or content snippet"
+            autoresize
+            :rows="5"
+            class="w-full" />
 
-      <UTooltip :text="!canUseToday() ? 'Daily limit reached (3/day)' : ''">
-        <UButton @click="generate" :loading="loading" :disabled="input.length < 5 || !canUseToday()">
-          Generate SEO Metadata
-        </UButton>
-      </UTooltip>
+          <div class="text-sm text-gray-500 dark:text-gray-400">Uses today: {{ usageCount }} / 3</div>
 
-      <div v-if="usageCount >= limit" class="text-center mt-4">
-        <p class="mb-2">Upgrade to Pro for unlimited generations</p>
-        <UButton to="https://redlabelz.gumroad.com/l/zajsnz" target="_blank" color="primary">Upgrade Now</UButton>
-      </div>
+          <UTooltip :text="!canUseToday() ? 'Daily limit reached (3/day)' : ''">
+            <UButton @click="generate" :loading="loading" :disabled="input.length < 5 || !canUseToday()">
+              Generate SEO Metadata
+            </UButton>
+          </UTooltip>
 
-      <div v-if="output" class="mt-6 space-y-3 text-left bg-white dark:bg-gray-800 p-4 rounded">
-        <div>
-          <strong>Meta Title:</strong> {{ output.title }}
-          <UButton icon="i-heroicons-clipboard" size="xs" variant="ghost" @click="copyToClipboard(output.title)" />
-        </div>
-        <div>
-          <strong>Meta Description:</strong> {{ output.description }}
-          <UButton
-            icon="i-heroicons-clipboard"
-            size="xs"
-            variant="ghost"
-            @click="copyToClipboard(output.description)" />
-        </div>
-        <div>
-          <strong>Keywords:</strong> {{ output.keywords }}
-          <UButton icon="i-heroicons-clipboard" size="xs" variant="ghost" @click="copyToClipboard(output.keywords)" />
+          <div class="flex items-center justify-center gap-4 text-center mt-4">
+            <p class="">Upgrade to Pro for unlimited generations</p>
+            <SignInModal />
+          </div>
+
+          <div v-if="output" class="h-60 overflow-auto mt-6 space-y-3 text-left bg-white dark:bg-gray-800 p-4 rounded">
+            <div>
+              <strong>Meta Title:</strong> {{ output.title }}
+              <UButton icon="i-heroicons-clipboard" size="xs" variant="ghost" @click="copyToClipboard(output.title)" />
+            </div>
+            <div>
+              <strong>Meta Description:</strong> {{ output.description }}
+              <UButton
+                icon="i-heroicons-clipboard"
+                size="xs"
+                variant="ghost"
+                @click="copyToClipboard(output.description)" />
+            </div>
+            <div>
+              <strong>Keywords:</strong> {{ output.keywords }}
+              <UButton
+                icon="i-heroicons-clipboard"
+                size="xs"
+                variant="ghost"
+                @click="copyToClipboard(output.keywords)" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+
+    <div v-else></div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -77,9 +99,9 @@ const languageOptions = [
 ];
 
 const modelOptions = [
-  { label: "Mistral 7B Instruct", value: "mistralai/mistral-7b-instruct" },
-  { label: "GLM 4.5 Air", value: "z-ai/glm-4.5-air:free" },
-  { label: "GPT OSS 20B", value: "openai/gpt-oss-20b:free" },
+  { label: "Mistral", value: "mistralai/mistral-7b-instruct" },
+  { label: "Z.AI", value: "z-ai/glm-4.5-air:free" },
+  { label: "OpenAI", value: "openai/gpt-oss-20b:free" },
 ];
 
 function getUsage() {
@@ -164,3 +186,60 @@ onMounted(() => {
   getUsage(); // Initialize counter
 });
 </script>
+
+<style scoped>
+@reference "../assets/css/main.css";
+
+.background-box {
+  @apply absolute rounded-xl backdrop-blur-sm;
+}
+.background-box:nth-child(1) {
+  @apply top-20 left-44 size-16 bg-yellow-300/20;
+}
+.background-box:nth-child(2) {
+  @apply top-8 right-14 size-20 bg-red-300/20;
+}
+.background-box:nth-child(3) {
+  @apply -right-10 bottom-6 size-48 bg-green-300/20;
+}
+.background-box:nth-child(4) {
+  @apply bottom-20 left-28 size-12 bg-purple-300/20;
+}
+.background-box:nth-child(5) {
+  @apply top-42 -left-10 size-28 bg-blue-300/20;
+}
+
+.square {
+  @apply absolute rounded-xl bg-white/10 shadow-xl backdrop-blur-sm dark:bg-black/20;
+}
+.square:nth-child(1) {
+  @apply -top-12 -right-14 h-22 w-22;
+}
+.square:nth-child(2) {
+  @apply top-42 -left-24 z-10 h-26 w-26;
+}
+.square:nth-child(3) {
+  @apply bottom-8 -right-20 z-10 h-20 w-20;
+}
+.square:nth-child(4) {
+  @apply -bottom-20 left-28 h-12 w-12;
+}
+.square:nth-child(5) {
+  @apply -top-28 left-44 h-16 w-16;
+}
+
+.animate-move {
+  animation: move 10s linear infinite;
+  animation-delay: calc(var(--i) * -1s);
+}
+
+@keyframes move {
+  0%,
+  100% {
+    transform: translateY(-40px);
+  }
+  50% {
+    transform: translateY(40px);
+  }
+}
+</style>
